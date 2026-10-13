@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f4c9ca">
+<link rel="manifest" href="manifest.webmanifest">
+<title>奶油小窩｜考題鬧鐘</title>
+<style>
+:root{--pink:#e8a6ad;--cream:#fffaf4;--ink:#5d4b4b;--muted:#998583;--line:#f0deda;--rose:#fff0ee;--green:#e9f5e7;--blue:#edf0ff}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(#fff7f0,#f7e6e3);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;color:var(--ink)}
+main{max-width:600px;margin:auto;padding:14px 13px 38px}.card{background:#fffdfb;border:1px solid var(--line);border-radius:23px;padding:17px;margin-bottom:13px;box-shadow:0 7px 22px #7751510b}
+.hero{display:flex;align-items:center;gap:13px}.mascot{font-size:44px;background:var(--rose);padding:11px;border-radius:18px}h1{font-size:23px;margin:0}h2{font-size:18px;margin:0 0 12px}p{line-height:1.55;margin:7px 0}.muted{font-size:12px;color:var(--muted)}.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.pill{font-size:11px;border-radius:99px;padding:5px 9px;background:#f8e9e5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.alarm{background:#fff1ee;border:1px solid #f2dbd7;border-radius:15px;padding:11px}.alarm strong{display:block;color:#b86f78;font-size:22px}.alarm small{font-size:11px}
+button,select,input{font:inherit}button{border:0;border-radius:13px;padding:12px 14px;background:var(--pink);color:#fff;font-weight:700;cursor:pointer}button:disabled{opacity:.4}.full{width:100%;margin-top:9px}.secondary{background:#f2e9e5;color:#725e5d}.row{display:flex;gap:9px;align-items:center}.row>*{flex:1}label{font-size:12px;display:block;margin:9px 0 5px}input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink)}
+.progress{height:7px;background:#f4e6e1;border-radius:9px;overflow:hidden;margin:12px 0}.progress div{height:100%;background:var(--pink);width:0;transition:width .2s}.meta{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}.option{display:flex;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:13px;margin:8px 0;background:white;cursor:pointer}.option.selected{background:var(--rose);border-color:#d98f98}.letter{background:#f8e7e3;border-radius:50%;padding:4px 8px;font-weight:700}.feedback{border-radius:13px;padding:12px;margin-top:10px}.good{background:var(--green)}.bad{background:#fff0e9}.hide{display:none}.stat{padding:9px 0;border-bottom:1px solid #f4e9e5;font-size:13px}.stat:last-child{border:0}.nav{display:flex;gap:8px}.nav button{flex:1}.tiny{font-size:11px;color:var(--muted)}
+</style></head>
+<body><main>
+<header class="card"><div class="hero"><div class="mascot">🐑⚾</div><div><h1>奶油小窩</h1><p>棒球段考鬧鐘 · 第二版</p><div class="pills"><span class="pill">韓系奶油色</span><span class="pill">國文＋地理加強</span><span class="pill">樂天應援</span></div></div></div><p class="muted">可以安裝到主畫面、記錄答題進度與錯題。背景鬧鐘仍需使用手機系統時鐘。</p></header>
+
+<section class="card"><h2>⏰ 我的鬧鐘排程</h2><div class="grid"><div class="alarm"><strong>06:00</strong><small>第一輪｜五題挑戰</small></div><div class="alarm"><strong>06:20</strong><small>第二輪｜複習提醒</small></div><div class="alarm"><strong>06:30</strong><small>第三輪｜弱科加強</small></div><div class="alarm"><strong>06:40</strong><small>最後起床提醒</small></div></div><button class="full" id="alarmTip">顯示手機鬧鐘設定提醒</button><p id="alarmMsg" class="muted hide">請開啟手機「時鐘」App，分別新增 06:00、06:20、06:30、06:40。網頁無法保證在關閉或背景時自行響鈴。</p></section>
+
+<section class="card"><h2>⚾ 我的應援卡</h2><label>球隊</label><select id="team"><option>樂天桃猿</option><option>其他球隊</option></select><label>喜歡的球員</label><select id="player"><option>陳晨威</option><option>何品室融</option><option>林政華</option><option>其他球員</option></select><label>球員背號（自行確認後填寫）</label><input id="number" placeholder="輸入背號（選填）"><button class="full" id="saveFan">儲存應援設定</button><p id="fanMsg" class="muted"></p></section>
+
+<section class="card" id="quizCard"><h2>📚 五題混合特訓</h2><p class="muted">題目為自編練習。國文、地理比重較高；各題會顯示練習範圍。</p><div class="progress"><div id="bar"></div></div><div class="meta"><span id="subject">國文・字音</span><span id="counter">第 1 / 5 題</span></div><p class="muted" id="range"></p><h2 id="question" style="margin-top:12px"></h2><div id="options"></div><div id="feedback" class="feedback hide"></div><button class="full" id="submit" disabled>確認答案</button><button class="full secondary hide" id="next">下一題</button></section>
+
+<section class="card"><h2>📝 我的錯題本</h2><p class="muted">答錯的題目會留在這裡，方便下次複習。</p><div id="mistakes"><p class="muted">還沒有錯題，開始練習吧！</p></div><button class="full secondary" id="clearMistakes">清除錯題本</button></section>
+
+<section class="card"><h2>🌷 學習設定</h2><div class="stat"><b>國文・康軒</b><br>字音、字形、改錯、成語；課文細節需依實際範圍核對。</div><div class="stat"><b>地理・翰林</b><br>地圖判讀、方位、比例尺；章節細目待核對課本 CH1～CH2。</div><div class="stat"><b>數學・康軒｜自然・康軒｜英文・翰林</b><br>依已提供的考程與考卷照片逐步擴充題庫。</div><p class="tiny">本原型在同一瀏覽器可保存設定與錯題；清除瀏覽器資料可能會移除紀錄。</p></section>
+</main>
+<script>
+const questions=[
+{s:"國文・字音",r:"國文常見成語字音（自編練習）",q:"「一曝十寒」中的「曝」，注音是哪一個？",o:["ㄅㄠˋ","ㄆㄨˋ","ㄆㄠˋ","ㄆㄨ"],a:1,e:"「一曝十寒」的「曝」讀 ㄆㄨˋ，意思是曬太陽。建議把字音和整個成語一起記。"},
+{s:"國文・字形",r:"國文成語字形（自編練習）",q:"下列哪個成語寫法正確？",o:["再接再勵","再接再厲","在接再厲","再結再厲"],a:1,e:"正確寫法是「再接再厲」，形容繼續努力。"},
+{s:"地理・比例尺",r:"地圖比例尺（基礎示範；需核對翰林 CH1～CH2）",q:"地圖比例尺為 1：100,000，圖上兩地相距 3 公分，實際距離是多少？",o:["300 公尺","3 公里","30 公里","300 公里"],a:1,e:"3 × 100,000 = 300,000 公分，也就是 3 公里。"},
+{s:"國文・改錯",r:"國文常見成語改錯（自編練習）",q:"「他迫不急待地打開禮物」中，哪個詞語寫錯？",o:["迫不急待","打開","禮物","沒有錯字"],a:0,e:"應改成「迫不及待」，意思是急切得不能再等待。"},
+{s:"自然・顯微鏡",r:"依你提供的自然考卷照片：顯微鏡操作題型",q:"使用複式顯微鏡時，若視野太暗，較適合先調整哪個部分？",o:["玻片標本名稱","目鏡刻度","光圈或反光鏡","載物臺顏色"],a:2,e:"可以調整光圈或反光鏡，改善進入顯微鏡的光線。"},
+{s:"地理・方位",r:"地圖方位（基礎示範；需核對翰林 CH1～CH2）",q:"一般地圖上方為北方。某地在另一地右側，且兩地位於同一水平線，前者位於哪個方向？",o:["東方","西方","南方","北方"],a:0,e:"一般地圖右方為東、左方為西、上方為北、下方為南。"},
+{s:"英文・句型",r:"Starter Unit～Review 1（需核對實際課本）",q:"選出正確句子。",o:["She are my friend.","She am my friend.","She is my friend.","She be my friend."],a:2,e:"主詞 She 搭配 be 動詞 is。請再依課堂實際教過的句型複習。"},
+{s:"自然・科學閱讀",r:"依你提供的自然考卷照片：雷文霍克與微生物閱讀",q:"雷文霍克透過顯微鏡觀察，讓人們更認識哪一類事物？",o:["微小生物","星系運行","大型哺乳動物","岩石形成"],a:0,e:"文章重點是他利用顯微鏡觀察微小生物，拓展人們對肉眼看不見世界的認識。"},
+{s:"國文・字形",r:"國文常見錯別字辨識（自編練習）",q:"下列哪個詞語寫法正確？",o:["迫不及待","迫不急待","迫不即待","迫不極待"],a:0,e:"正確寫法是「迫不及待」。可將常錯字記入錯字本。"},
+{s:"地理・圖表判讀",r:"地理基礎圖表概念（示範題；需核對課本）",q:"地圖上用來表示實際距離與圖上距離縮小關係的工具是什麼？",o:["圖例","比例尺","方向標","等高線"],a:1,e:"比例尺表示地圖距離與實際距離之間的縮小比例。"}
+];
+let idx=0,selected=-1,locked=false,score=0,round=[];
+const $=id=>document.getElementById(id);
+function shuffleRound(){let ids=questions.map((_,i)=>i);ids.sort(()=>Math.random()-.5);round=ids.slice(0,5);idx=0;score=0;render()}
+function render(){let q=questions[round[idx]];selected=-1;locked=false;$("subject").textContent=q.s;$("counter").textContent=`第 ${idx+1} / 5 題`;$("range").textContent="對應範圍："+q.r;$("question").textContent=q.q;$("options").innerHTML="";q.o.forEach((v,i)=>{let d=document.createElement("div");d.className="option";d.innerHTML=`<span class="letter">${"ABCD"[i]}</span><span>${v}</span>`;d.onclick=()=>{if(locked)return;selected=i;[...$("options").children].forEach(n=>n.classList.remove("selected"));d.classList.add("selected");$("submit").disabled=false};$("options").appendChild(d)});$("feedback").className="feedback hide";$("next").classList.add("hide");$("submit").classList.remove("hide");$("submit").disabled=true;$("bar").style.width=(idx/5*100)+"%"}
+function drawMistakes(){let arr=JSON.parse(localStorage.getItem("butterMistakes")||"[]");$("mistakes").innerHTML=arr.length?arr.slice().reverse().map(m=>`<div class="stat"><b>${m.s}</b><br>${m.q}<br><span class="muted">正解：${m.answer}</span><br><span>${m.e}</span></div>`).join(""):'<p class="muted">還沒有錯題，開始練習吧！</p>'}
+$("submit").onclick=()=>{if(selected<0||locked)return;locked=true;let q=questions[round[idx]],ok=selected===q.a;if(ok)score++;else{let arr=JSON.parse(localStorage.getItem("butterMistakes")||"[]");arr.push({s:q.s,q:q.q,answer:q.o[q.a],e:q.e});localStorage.setItem("butterMistakes",JSON.stringify(arr));drawMistakes()}[...$("options").children].forEach((n,i)=>{if(i===q.a)n.classList.add("selected")});$("feedback").className="feedback "+(ok?"good":"bad");$("feedback").innerHTML=`<b>${ok?"答對了！⚾":"沒關係，訂正一下！"}</b><p>${q.e}</p>`;$("submit").classList.add("hide");$("next").classList.remove("hide");$("next").textContent=idx===4?"查看本輪結果":"下一題 →";$("bar").style.width=((idx+1)/5*100)+"%";localStorage.setItem("butterLastScore",score)};
+$("next").onclick=()=>{if(idx<4){idx++;render()}else{$("quizCard").innerHTML=`<h2>🏆 本輪完成！</h2><p style="font-size:30px;font-weight:800;color:#b86f78">${score} / 5 題</p><p>${score===5?"五題全對！太棒了！":"完成一輪就是進步，記得回顧錯題本。"}</p><button class="full" id="again">再挑戰五題</button>`;$("again").onclick=()=>location.reload()}};
+$("saveFan").onclick=()=>{let data={team:$("team").value,player:$("player").value,number:$("number").value};localStorage.setItem("butterFan",JSON.stringify(data));$("fanMsg").textContent="已儲存！下次在同一瀏覽器開啟時可載入。"};
+$("alarmTip").onclick=()=>$("alarmMsg").classList.toggle("hide");
+$("clearMistakes").onclick=()=>{localStorage.removeItem("butterMistakes");drawMistakes()};
+try{let f=JSON.parse(localStorage.getItem("butterFan")||"null");if(f){$("team").value=f.team;$("player").value=f.player;$("number").value=f.number||"";$("fanMsg").textContent="已載入上次儲存的應援設定。"}}catch(e){}
+drawMistakes();shuffleRound();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script></body></html>
